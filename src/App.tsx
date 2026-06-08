@@ -210,7 +210,7 @@ const Home = ({ setTab }: { setTab: (t: string) => void }) => {
                 <img 
                   alt="Profile" 
                   className="w-full h-full object-cover grayscale brightness-75 group-hover:grayscale-0 group-hover:brightness-100 transition-all duration-1000 scale-110 group-hover:scale-100" 
-                  src="/image.jpg" 
+                  src="/portfolioAi/image.jpg" 
                 />
                 <div className="absolute inset-0 pointer-events-none opacity-20 terminal-grid"></div>
               </div>
