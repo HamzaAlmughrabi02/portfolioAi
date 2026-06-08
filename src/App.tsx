@@ -308,7 +308,7 @@ const GOLD_PROJECTS = [
     title: "Intelligent Sales Prediction",
     tags: ['TECH: XGBoost', 'METRIC: R2=0.999', 'DEPLOY: K8S_CLUSTER'],
     desc: "High-frequency predictive modeling utilizing XGBoost for precise revenue forecasting. Optimized for real-time inference with sub-20ms latency across global nodes.",
-    image: "/download (1).jpg",
+    image: "/download_1.jpg",
     fidelity: "92%",
     specs: [
       "Core architecture utilizing XGBoost ensemble methods for robust regression models.",
@@ -336,7 +336,7 @@ const GOLD_PROJECTS = [
     title: "Neural Industrial Optimization",
     tags: ['AI: PyTorch', 'ARCH: Transformers', 'OPT: TensorRT'],
     desc: "Deep learning architecture for optimizing factory throughput. Utilizes vision transformers to detect bottlenecks and predict maintenance cycles with high precision.",
-    image: "/_Exploring New Opportunities_ The Intersection of Artificial Intelligence and WordPress_.jpg",
+    image: "/The_New_Rules_of_Wealth_in_the_AI_Era.jpg.jpg",
     fidelity: "95%",
     specs: [
       "Industrial vision transformers for high-accuracy bottleneck detection systems.",
