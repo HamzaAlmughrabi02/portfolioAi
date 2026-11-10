@@ -104,6 +104,7 @@ export const projects: Project[] = [
       'Built a filterable comment inbox and protected API with owner authentication, ownership checks and duplicate-action protection.',
       'Validated the latest release with 101 backend tests, 16 workflow contract and graph tests, and five isolated demo tests.',
     ],
+    repo: 'https://github.com/HamzaAlmughrabi02/instagram-intelligence-',
     demo: 'https://instagram-intelligence-ui.onrender.com/?demo=1',
     demoNote: 'Fictional data. All demo actions run locally in your browser; no Instagram account or API key is required.',
   },
