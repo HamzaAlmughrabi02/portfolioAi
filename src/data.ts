@@ -7,7 +7,9 @@ export interface Project {
   summary: string;
   result: string;
   details: string[];
-  repo: string;
+  repo?: string;
+  image?: string;
+  demoNote?: string;
   demo?: string;
 }
 
@@ -88,6 +90,23 @@ export const projects: Project[] = [
       'Built an interactive Excel dashboard highlighting 44% senior churn and a 63.24% churn rate in California.',
     ],
     repo: 'https://github.com/HamzaAlmughrabi02/C-25-812_Hamza-Almughrabi',
+  },
+  {
+    id: 'AI_06',
+    title: 'Instagram Intelligence',
+    category: 'AI workflow automation',
+    year: '2026',
+    tags: ['n8n', 'React', 'TypeScript', 'FastAPI', 'PostgreSQL'],
+    summary: 'An AI-assisted workspace for collecting Instagram comments, understanding feedback, and coordinating replies, moderation and critical alerts.',
+    result: 'Six n8n workflows with guarded action routing',
+    details: [
+      'Coordinated collection, AI analysis and confidence-based actions through n8n, with Telegram alerts and Google Sheets synchronization.',
+      'Built a filterable comment inbox and protected API with owner authentication, ownership checks and duplicate-action protection.',
+      'Validated the latest release with 101 backend tests, 16 workflow contract and graph tests, and five isolated demo tests.',
+    ],
+    demo: 'https://instagram-intelligence-ui.onrender.com/?demo=1',
+    image: 'instagram-intelligence-demo.png',
+    demoNote: 'Fictional data. All demo actions run locally in your browser; no Instagram account or API key is required.',
   },
 ];
 
