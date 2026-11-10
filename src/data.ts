@@ -98,7 +98,7 @@ export const projects: Project[] = [
     year: '2026',
     tags: ['n8n', 'React', 'TypeScript', 'FastAPI', 'PostgreSQL'],
     summary: 'An AI-assisted workspace for collecting Instagram comments, understanding feedback, and coordinating replies, moderation and critical alerts.',
-    result: 'Six n8n workflows with guarded action routing',
+    result: '6 connected n8n workflows',
     details: [
       'Coordinated collection, AI analysis and confidence-based actions through n8n, with Telegram alerts and Google Sheets synchronization.',
       'Built a filterable comment inbox and protected API with owner authentication, ownership checks and duplicate-action protection.',

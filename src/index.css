@@ -12,3 +12,28 @@
 .project-visual.project-screenshot{padding:44px 20px 52px;justify-content:center;min-width:0}
 .project-screenshot img{display:block;width:100%;height:auto;border:1px solid var(--border);border-radius:4px}
 .project-copy .demo-note{font-size:12px;line-height:1.6;margin:18px 0 0}
+
+/* The automation case study gives the actual product room to be read. */
+.project-case-study{display:flex;flex-direction:column;overflow:hidden}
+.project-case-study .project-screenshot{order:-1;border:0;border-bottom:1px solid var(--border);min-height:0;padding:30px clamp(20px,4vw,52px) 24px;gap:20px;background:radial-gradient(ellipse at 50% 50%,#b6ff0012,transparent 75%),#0d100a}
+.showcase-heading{width:100%;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.showcase-badge{font:9px var(--mono);letter-spacing:1px;color:#c6d5b1;display:flex;align-items:center;gap:8px}
+.showcase-browser{width:100%;max-width:1050px;border:1px solid #4a5638;box-shadow:0 20px 55px #0005;background:#eaf0f6;overflow:hidden}
+.browser-chrome{display:flex;align-items:center;justify-content:space-between;gap:14px;background:#191e13;border-bottom:1px solid #344127;color:#b5c39e;padding:13px 16px;font:10px var(--mono)}
+.browser-dots{display:flex;gap:5px}.browser-dots i{display:block;width:6px;height:6px;background:#64734e;border-radius:50%}.browser-dots i:first-child{background:var(--accent)}
+.screenshot-link{display:block;position:relative;color:var(--text)}
+.project-screenshot .screenshot-link img{width:100%;height:auto;border:0;border-radius:0;display:block}
+.screenshot-expand{position:absolute;bottom:14px;right:14px;display:flex;gap:8px;align-items:center;background:#10150df2;border:1px solid #7a9852;color:#eff7e4;padding:10px 13px;font-size:11px;transition:background-color .2s}
+.screenshot-link:hover .screenshot-expand{background:#293b12;color:var(--accent)}
+.showcase-caption{width:100%;display:flex;justify-content:space-between;align-items:center;gap:15px}.showcase-caption>span{font-size:13px;color:#c8d3b7}.showcase-caption small{font:9px var(--mono);color:#98a786}
+.project-case-study>.project-copy{padding:34px clamp(20px,4vw,52px) 30px;display:grid;grid-template-columns:1.25fr 1fr;column-gap:60px;align-items:start}
+.project-case-study .project-copy>.eyebrow,.project-case-study .project-copy>h2,.project-case-study .project-copy>.tags,.project-case-study .project-copy>p:not(.demo-note){grid-column:1}
+.project-case-study .project-copy>h2{font-size:clamp(30px,3vw,42px);margin-bottom:18px}
+.project-case-study .project-copy>.project-result{grid-column:2;grid-row:1 / span 2;margin:5px 0 20px;font-size:14px;align-self:start;padding-bottom:18px;border-bottom:1px solid var(--border);width:100%}
+.project-case-study .project-copy>details{grid-column:2;grid-row:3 / span 2;border-top:0;padding-top:0}
+.project-case-study .project-copy>.project-links{grid-column:1;margin-top:5px}
+.project-case-study .project-copy>.demo-note{grid-column:1 / -1;margin:20px 0 0;font-size:12px;max-width:70ch;color:#a0ac90}
+.project-story{padding:27px clamp(20px,4vw,52px) 35px;border-top:1px solid var(--border);background:#b6ff0003}
+.story-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:32px;margin-top:24px}.step-number{font:11px var(--mono);color:var(--accent)}.story-steps h3{font-size:17px;font-weight:500;margin:12px 0 8px}.story-steps p{font-size:13px;line-height:1.7;margin:0;max-width:35ch}
+@media(max-width:950px){.project-case-study>.project-copy{column-gap:30px}.showcase-caption small{font-size:8px}.project-case-study .project-copy>.project-result{font-size:12px}.story-steps{gap:22px}.story-steps h3{font-size:15px}}
+@media(max-width:650px){.project-case-study .project-screenshot{padding:20px 12px 17px;gap:14px}.showcase-heading{padding:0 5px}.showcase-badge{font-size:7px;letter-spacing:.4px}.showcase-heading>.eyebrow{font-size:8px}.browser-chrome{padding:10px;font-size:7px;gap:6px}.browser-chrome>svg{width:11px}.browser-dots{gap:3px}.browser-dots i{width:4px;height:4px}.showcase-caption{padding:0 5px;flex-direction:column;align-items:flex-start;gap:7px}.showcase-caption>span{font-size:12px}.showcase-caption small{font-size:8px}.screenshot-expand{position:static;justify-content:center;border:0;border-top:1px solid #475a30;background:#1a2411;min-height:44px;font-size:11px}.project-case-study>.project-copy{display:block;padding:26px 20px}.project-case-study .project-copy>h2{font-size:30px}.project-case-study .project-copy>.project-result{margin:22px 0 16px;font-size:13px}.project-case-study .project-copy>details{border-top:0}.project-case-study .project-copy>.project-links{margin-top:20px}.project-case-study .project-copy>.demo-note{margin-top:16px;font-size:12px}.project-story{padding:24px 20px}.story-steps{grid-template-columns:1fr;gap:22px;margin-top:22px}.story-steps>div{position:relative;padding-left:33px}.step-number{position:absolute;left:0;top:3px}.story-steps h3{font-size:16px;margin:0 0 7px}.story-steps p{font-size:13px;max-width:none}}
