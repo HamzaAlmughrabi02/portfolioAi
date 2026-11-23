@@ -2,15 +2,15 @@ import { useEffect, useLayoutEffect, useRef, type ReactNode, type RefObject } fr
 import { motion, useMotionValue, useScroll, useSpring } from 'motion/react';
 
 type MainRef = RefObject<HTMLElement | null>;
-const EASE = [0.22, 1, 0.36, 1] as const;
+const EASE = [0.22, 0.8, 0.3, 1] as const;
 
 /** One controller feeds the pointer light, follower, parallax and panel spotlight. */
 export function MotionAtmosphere({ mainRef, disabled }: { mainRef: MainRef; disabled: boolean }) {
   const shell = useRef<HTMLDivElement>(null);
   const targetX = useMotionValue(-500);
   const targetY = useMotionValue(-500);
-  const pointerX = useSpring(targetX, { stiffness: 230, damping: 34, mass: 0.45 });
-  const pointerY = useSpring(targetY, { stiffness: 230, damping: 34, mass: 0.45 });
+  const pointerX = useSpring(targetX, { stiffness: 1200, damping: 42, mass: 0.12 });
+  const pointerY = useSpring(targetY, { stiffness: 1200, damping: 42, mass: 0.12 });
   const driftX = useSpring(0, { stiffness: 45, damping: 26 });
   const driftY = useSpring(0, { stiffness: 45, damping: 26 });
   const { scrollYProgress } = useScroll({ container: mainRef });
@@ -37,14 +37,15 @@ export function MotionAtmosphere({ mainRef, disabled }: { mainRef: MainRef; disa
     };
     const move = (event: PointerEvent) => {
       if (!fine.matches || event.pointerType !== 'mouse') return;
+      // Feed position immediately; only geometry and lighting wait for a frame.
+      targetX.set(event.clientX); targetY.set(event.clientY);
+      if (!shown) {
+        pointerX.jump(event.clientX); pointerY.jump(event.clientY); shown = true;
+      }
       cancelAnimationFrame(frame);
       frame = requestAnimationFrame(() => {
         const target = event.target instanceof Element ? event.target : null;
         const editable = !!target?.closest('input, textarea, select, [contenteditable="true"]');
-        if (!shown) {
-          pointerX.jump(event.clientX); pointerY.jump(event.clientY); shown = true;
-        }
-        targetX.set(event.clientX); targetY.set(event.clientY);
         layer.dataset.pointer = editable ? 'hidden' : 'visible';
         layer.dataset.hover = target?.closest('a, button, summary') ? 'true' : 'false';
         driftX.set((event.clientX / window.innerWidth - 0.5) * 24);
@@ -100,17 +101,27 @@ export function MotionAtmosphere({ mainRef, disabled }: { mainRef: MainRef; disa
   </div>;
 }
 
-/** Reveal logical blocks against the real, nested scroll container. */
-export function PageTransition({ children, mainRef, disabled, page }: { key?: string; children: ReactNode; mainRef: MainRef; disabled: boolean; page: string }) {
+/** One route transition; only content starting below the fold gets a later reveal. */
+export function PageTransition({ children, mainRef, disabled, page, direction }: { key?: string; children: ReactNode; mainRef: MainRef; disabled: boolean; page: string; direction: number }) {
   const content = useRef<HTMLDivElement>(null);
   useLayoutEffect(() => { mainRef.current?.scrollTo({ top: 0, behavior: 'instant' }); }, [mainRef]);
-  useEffect(() => {
+  useLayoutEffect(() => {
     const root = content.current;
     const scroller = mainRef.current;
     if (!root || !scroller || disabled) return;
     const selectors = '.hero-topline, .hero-copy > *, .portrait-zone, .home-bottom, .section-title > *, .project-filters, .project-toolbar, .directory-heading, .directory-group, .skill-block, .process-strip, .education-card, .subsection-title, .cert-list > article, .learning-notes, .contact-main, .contact-aside > *';
-    const elements = [...root.querySelectorAll<HTMLElement>(selectors)];
+    const viewportBottom = scroller.getBoundingClientRect().bottom;
+    const elements = [...root.querySelectorAll<HTMLElement>(selectors)].filter(element => element.getBoundingClientRect().top >= viewportBottom);
     const running = new Set<Animation>();
+    const restore = (element: HTMLElement) => {
+      element.style.removeProperty('opacity');
+      element.style.removeProperty('transform');
+    };
+    // Prepare off-screen elements before paint; visible content belongs to the route animation.
+    for (const element of elements) {
+      element.style.opacity = '0';
+      element.style.transform = 'translate3d(0, 14px, 0)';
+    }
     const observer = new IntersectionObserver(entries => {
       let stagger = 0;
       for (const entry of entries) {
@@ -118,20 +129,25 @@ export function PageTransition({ children, mainRef, disabled, page }: { key?: st
         const element = entry.target as HTMLElement;
         observer.unobserve(element);
         const animation = element.animate([
-          { opacity: 0.2, transform: 'translate3d(0, 18px, 0)' },
+          { opacity: 0, transform: 'translate3d(0, 14px, 0)' },
           { opacity: 1, transform: 'translate3d(0, 0, 0)' },
-        ], { duration: 620, delay: Math.min(stagger++ * 65, 260), easing: 'cubic-bezier(.22,1,.36,1)', fill: 'backwards' });
+        ], { duration: 480, delay: Math.min(stagger++ * 45, 135), easing: 'cubic-bezier(.22,.8,.3,1)', fill: 'both' });
         running.add(animation);
-        animation.onfinish = () => running.delete(animation);
+        animation.onfinish = () => { restore(element); animation.cancel(); running.delete(animation); };
       }
-    }, { root: scroller, threshold: 0.08, rootMargin: '0px 0px -20px 0px' });
+    }, { root: scroller, threshold: 0.05, rootMargin: '0px 0px 20px 0px' });
     elements.forEach(element => observer.observe(element));
-    return () => { observer.disconnect(); running.forEach(animation => animation.cancel()); };
+    return () => { observer.disconnect(); running.forEach(animation => animation.cancel()); elements.forEach(restore); };
   }, [mainRef, disabled]);
+  const profile = page === 'projects' ? { x: 18 * direction, y: 0 }
+    : page === 'skills' ? { x: 0, y: 16 }
+    : page === 'education' ? { x: -14 * direction, y: 0 }
+    : page === 'contact' ? { x: 0, y: -12 }
+    : { x: 0, y: 0 };
   return <motion.div ref={content} className="page-content" data-page={page}
-    initial={{ opacity: disabled ? 1 : 0, y: disabled ? 0 : 16 }}
-    animate={{ opacity: 1, y: 0, transition: { duration: disabled ? 0 : 0.4, ease: EASE } }}
-    exit={{ opacity: 0, y: disabled ? 0 : -8, transition: { duration: disabled ? 0 : 0.15, ease: EASE } }}>
+    initial={{ opacity: disabled ? 1 : 0, x: disabled ? 0 : profile.x, y: disabled ? 0 : profile.y }}
+    animate={{ opacity: 1, x: 0, y: 0, transition: { duration: disabled ? 0 : 0.56, ease: EASE } }}
+    exit={{ opacity: 0, transition: { duration: disabled ? 0 : 0.18, ease: [0.4, 0, 1, 1] } }}>
     {children}
   </motion.div>;
 }

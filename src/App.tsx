@@ -49,6 +49,8 @@ function Projects({ motionDisabled }: { motionDisabled: boolean }) {
   const visible = projects.filter(project => filter === 'All' || project.group === filter);
   const selectedIndex = Math.max(0, visible.findIndex(project => project.id === selectedId));
   const p = visible[selectedIndex];
+  const cardMounted = useRef(false);
+  useEffect(() => { cardMounted.current = true; }, []);
   const groups = projectGroups.filter(group => filter === 'All' || filter === group);
   const changeFilter = (next: ProjectGroup | 'All') => {
     setFilter(next);
@@ -68,7 +70,7 @@ function Projects({ motionDisabled }: { motionDisabled: boolean }) {
     </div>
     <div className="project-toolbar"><span className="eyebrow" role="status">{filter === 'All' ? 'ALL FIELDS' : filter} / {visible.length} PROJECTS</span><div className="project-arrows"><button className="icon-button" aria-label="Previous project" onClick={() => step(-1)}><ChevronLeft/></button><span className="project-count" aria-live="polite">{String(selectedIndex + 1).padStart(2, '0')} / {String(visible.length).padStart(2, '0')}</span><button className="icon-button" aria-label="Next project" onClick={() => step(1)}><ChevronRight/></button></div></div>
     <span className="sr-only" role="status">Viewing {p.title}, project {selectedIndex + 1} of {visible.length}.</span>
-    <motion.article key={p.id} id="featured-project" ref={featuredRef} className="featured-project glass-panel" aria-labelledby="featured-title" initial={{opacity: reduced ? 1 : 0, y: reduced ? 0 : 8}} animate={{opacity:1,y:0}} transition={{duration:reduced ? 0 : .28,ease:[.22,1,.36,1]}}>
+    <motion.article key={p.id} id="featured-project" ref={featuredRef} className="featured-project glass-panel" aria-labelledby="featured-title" initial={reduced || !cardMounted.current ? false : {opacity:0,y:6}} animate={{opacity:1,y:0}} transition={{duration:reduced ? 0 : .28,ease:[.22,1,.36,1]}}>
       <div className="project-copy" key={p.id}>
         <span className="eyebrow">{p.category} / {p.year}</span>
         <h2 id="featured-title">{p.title}</h2>
@@ -118,14 +120,23 @@ function Contact() {
 export default function App() {
   const [active, setActive] = useState(readTab);
   const main = useRef<HTMLElement>(null);
+  const activeRef = useRef(active);
+  const [travelDirection, setTravelDirection] = useState(1);
   const reduced = useReducedMotion();
   const [motionPaused, setMotionPaused] = useState(() => { try { return localStorage.getItem('portfolio-motion') === 'off'; } catch { return false; } });
   const effectsDisabled = !!reduced || motionPaused;
   const toggleMotion = () => setMotionPaused(value => { const next = !value; try { localStorage.setItem('portfolio-motion', next ? 'off' : 'on'); } catch {} return next; });
-  const navigate = (id: string) => { setActive(id); };
-  useEffect(() => { const sync = () => setActive(readTab()); window.addEventListener('hashchange', sync); return () => window.removeEventListener('hashchange',sync); }, []);
+  const navigate = (id: string) => {
+    if (id === activeRef.current) return;
+    const from = tabs.findIndex(tab => tab.id === activeRef.current);
+    const to = tabs.findIndex(tab => tab.id === id);
+    setTravelDirection(to >= from ? 1 : -1);
+    activeRef.current = id;
+    setActive(id);
+  };
+  useEffect(() => { const sync = () => navigate(readTab()); window.addEventListener('hashchange', sync); return () => window.removeEventListener('hashchange',sync); }, []);
   const initial = useRef(true);
   useEffect(() => { if(initial.current) {initial.current = false; return;} main.current?.focus({preventScroll:true}); }, [active]);
-  return <MotionConfig reducedMotion={motionPaused ? 'always' : 'user'}><div className="app-shell" data-motion-paused={effectsDisabled}><MotionAtmosphere mainRef={main} disabled={effectsDisabled}/><button className="motion-toggle" onClick={toggleMotion} disabled={!!reduced} aria-pressed={motionPaused} aria-label={reduced ? 'Motion disabled by your device preference' : motionPaused ? 'Resume ambient motion' : 'Pause ambient motion'} title={reduced ? 'Your reduced-motion preference is active' : undefined}>{effectsDisabled ? <Play size={13}/> : <Pause size={13}/>}<span>Motion {effectsDisabled ? 'off' : 'on'}</span></button><a className="skip-link" href="#main-content" onClick={e => {e.preventDefault(); main.current?.focus();}}>Skip to content</a><Header active={active} navigate={navigate} motionDisabled={effectsDisabled}/><div className="app-body"><aside className="sidebar" aria-label="Quick navigation"><div className="rail-label">PORTFOLIO / 26</div>{tabs.map(t => <a key={t.id} href={`#${t.id}`} onClick={() => navigate(t.id)} aria-label={t.label} aria-current={active === t.id ? 'page' : undefined} title={t.label}><t.icon size={20}/><span>{t.id === 'education' ? 'LEARN' : t.id.toUpperCase()}</span></a>)}<span className="rail-bottom">AI / DATA</span></aside><main ref={main} id="main-content" tabIndex={-1}><AnimatePresence mode="wait"><PageTransition key={active} page={active} mainRef={main} disabled={effectsDisabled}>{active === 'home' && <Home navigate={navigate}/ >}{active === 'projects' && <Projects motionDisabled={effectsDisabled}/>}{active === 'skills' && <Skills/>}{active === 'education' && <Education/>}{active === 'contact' && <Contact/>}</PageTransition></AnimatePresence><footer><span>© {new Date().getFullYear()} HAMZA ALMUGHRABI</span><span>BUILT WITH PURPOSE. DRIVEN BY DATA.</span><a href={github} target="_blank" rel="noreferrer">GitHub <ArrowUpRight size={13}/></a></footer></main></div></div></MotionConfig>;
+  return <MotionConfig reducedMotion={motionPaused ? 'always' : 'user'}><div className="app-shell" data-motion-paused={effectsDisabled}><MotionAtmosphere mainRef={main} disabled={effectsDisabled}/><button className="motion-toggle" onClick={toggleMotion} disabled={!!reduced} aria-pressed={motionPaused} aria-label={reduced ? 'Motion disabled by your device preference' : motionPaused ? 'Resume ambient motion' : 'Pause ambient motion'} title={reduced ? 'Your reduced-motion preference is active' : undefined}>{effectsDisabled ? <Play size={13}/> : <Pause size={13}/>}<span>Motion {effectsDisabled ? 'off' : 'on'}</span></button><a className="skip-link" href="#main-content" onClick={e => {e.preventDefault(); main.current?.focus();}}>Skip to content</a><Header active={active} navigate={navigate} motionDisabled={effectsDisabled}/><div className="app-body"><aside className="sidebar" aria-label="Quick navigation"><div className="rail-label">PORTFOLIO / 26</div>{tabs.map(t => <a key={t.id} href={`#${t.id}`} onClick={() => navigate(t.id)} aria-label={t.label} aria-current={active === t.id ? 'page' : undefined} title={t.label}><t.icon size={20}/><span>{t.id === 'education' ? 'LEARN' : t.id.toUpperCase()}</span></a>)}<span className="rail-bottom">AI / DATA</span></aside><main ref={main} id="main-content" tabIndex={-1}><AnimatePresence mode="wait"><PageTransition key={active} page={active} direction={travelDirection} mainRef={main} disabled={effectsDisabled}>{active === 'home' && <Home navigate={navigate}/ >}{active === 'projects' && <Projects motionDisabled={effectsDisabled}/>}{active === 'skills' && <Skills/>}{active === 'education' && <Education/>}{active === 'contact' && <Contact/>}</PageTransition></AnimatePresence><footer><span>© {new Date().getFullYear()} HAMZA ALMUGHRABI</span><span>BUILT WITH PURPOSE. DRIVEN BY DATA.</span><a href={github} target="_blank" rel="noreferrer">GitHub <ArrowUpRight size={13}/></a></footer></main></div></div></MotionConfig>;
 }
 
