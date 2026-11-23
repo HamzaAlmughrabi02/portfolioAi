@@ -1,7 +1,12 @@
+export const projectGroups = ['AI & Automation', 'Machine Learning', 'Data & Analytics'] as const;
+export type ProjectGroup = typeof projectGroups[number];
+
 export interface Project {
   id: string;
   title: string;
   category: string;
+  group: ProjectGroup;
+  note?: string;
   year: string;
   tags: string[];
   summary: string;
@@ -13,10 +18,11 @@ export interface Project {
   demo?: string;
 }
 
-// Project descriptions, reported results, and destinations come from the supplied CV.
+// Project descriptions and destinations come from the CV and linked repositories.
 export const projects: Project[] = [
   {
     id: 'ML_01',
+    group: 'Machine Learning',
     title: 'Car Insurance Claim Prediction',
     category: 'Machine learning',
     year: '2026 · Present',
@@ -33,6 +39,7 @@ export const projects: Project[] = [
   },
   {
     id: 'AI_02',
+    group: 'AI & Automation',
     title: 'Financial RAG AI Assistant',
     category: 'Applied AI',
     year: '2026',
@@ -48,6 +55,7 @@ export const projects: Project[] = [
   },
   {
     id: 'DE_03',
+    group: 'Data & Analytics',
     title: 'Data Warehouse & Analytics',
     category: 'Data engineering',
     year: '2026',
@@ -63,6 +71,7 @@ export const projects: Project[] = [
   },
   {
     id: 'ML_04',
+    group: 'Machine Learning',
     title: 'Sales Forecasting System',
     category: 'Predictive analytics',
     year: '2025',
@@ -78,6 +87,7 @@ export const projects: Project[] = [
   },
   {
     id: 'DA_05',
+    group: 'Data & Analytics',
     title: 'Telecom Customer Churn Analysis',
     category: 'Data analytics',
     year: '2025',
@@ -93,6 +103,7 @@ export const projects: Project[] = [
   },
   {
     id: 'AI_06',
+    group: 'AI & Automation',
     title: 'Instagram Intelligence',
     category: 'AI workflow automation',
     year: '2026',
@@ -107,6 +118,23 @@ export const projects: Project[] = [
     repo: 'https://github.com/HamzaAlmughrabi02/instagram-intelligence-',
     demo: 'https://instagram-intelligence-ui.onrender.com/?demo=1',
     demoNote: 'Fictional data. All demo actions run locally in your browser; no Instagram account or API key is required.',
+  },
+  {
+    id: 'AU_07',
+    group: 'AI & Automation',
+    title: 'Insurance Intelligence',
+    category: 'Document workflow automation',
+    year: '2026',
+    tags: ['Python', 'n8n', 'PostgreSQL', 'JavaScript'],
+    summary: 'IntelliSure is an Arabic insurance workspace that brings claim documents, extracted text, and preliminary findings together for structured human review.',
+    result: 'Document intake with traceable human review',
+    details: [
+      'Built multi-document motor-claim intake with native PDF and limited XLSX extraction, document previews, and text-matched source navigation.',
+      'Connected durable n8n dispatch jobs and idempotent result callbacks, with PostgreSQL integration and local SQLite persistence.',
+      'Added reviewer roles, versioned corrections, reanalysis, and an audit trail. The local MVP uses document rules and flags in its normal review route.',
+    ],
+    repo: 'https://github.com/HamzaAlmughrabi02/insurance-intelligence',
+    note: 'Local MVP · Preliminary findings support human review.',
   },
 ];
 
