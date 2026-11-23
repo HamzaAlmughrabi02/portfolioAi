@@ -19,7 +19,7 @@ export interface Project {
 }
 
 // Project descriptions and destinations come from the CV and linked repositories.
-export const projects: Project[] = [
+const projectRecords: Project[] = [
   {
     id: 'ML_01',
     group: 'Machine Learning',
@@ -134,9 +134,14 @@ export const projects: Project[] = [
       'Added reviewer roles, versioned corrections, reanalysis, and an audit trail. The local MVP uses document rules and flags in its normal review route.',
     ],
     repo: 'https://github.com/HamzaAlmughrabi02/insurance-intelligence',
+    demo: 'https://intellisure-insurance-demo.savorycord.chatgpt.site/',
+    demoNote: 'Interactive simulation with synthetic data. Runs in your browser independently of the local application.',
     note: 'Local MVP · Preliminary findings support human review.',
   },
 ];
+
+const projectOrder = ['AU_07', 'AI_06', 'AI_02', 'ML_01', 'ML_04', 'DE_03', 'DA_05'];
+export const projects: Project[] = [...projectRecords].sort((a, b) => projectOrder.indexOf(a.id) - projectOrder.indexOf(b.id));
 
 export const certifications = [
   { issuer: 'The Hope International', title: 'Machine Learning' },
